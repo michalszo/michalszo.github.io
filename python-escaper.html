@@ -1,0 +1,82 @@
+<!-- ChatGPT: Create HTML and JS code for a website which will take as an input a string with special characters and output the same string, but with special characters replaced with \x, \u or \U python strings -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Special Character Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        textarea, input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .output {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Special Character to Python Escape Sequence Converter</h1>
+
+    <label for="inputString">Enter a string with special characters:</label>
+    <textarea id="inputString" rows="5" placeholder="Type your text here..."></textarea>
+
+    <button onclick="convertString()">Convert</button>
+
+    <h3>Converted String:</h3>
+    <div id="output" class="output"></div>
+
+    <script>
+function convertString() {
+    const inputString = document.getElementById("inputString").value;
+    let result = "";
+
+    for (let i = 0; i < inputString.length; i++) {
+        const codePoint = inputString.codePointAt(i);
+
+        if (codePoint <= 0x7F) {
+            // ASCII characters
+            result += inputString[i];
+        } else if (codePoint <= 0xFF) {
+            // Characters that can be represented with \x (1-byte)
+            result += '\\x' + codePoint.toString(16).padStart(2, '0');
+        } else if (codePoint <= 0xFFFF) {
+            // Characters that can be represented with \u (2-bytes)
+            result += '\\u' + codePoint.toString(16).padStart(4, '0');
+        } else if (codePoint <= 0x10FFFF) {
+            // Characters that can be represented with \U (4-bytes)
+            result += '\\U' + codePoint.toString(16).padStart(8, '0');
+        }
+
+        // Handle surrogate pairs correctly
+        if (codePoint > 0xFFFF) {
+            i++; // Skip the next character as it's part of the surrogate pair
+        }
+    }
+
+    document.getElementById("output").textContent = result;
+}
+
+	</script>
+
+</body>
+</html>
